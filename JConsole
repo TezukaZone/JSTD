@@ -3,166 +3,95 @@ package JSTD;
  *
  * @author Philip
  */
-public class JConsole{
-    private java.io.PrintStream outStream;
-    private java.io.BufferedReader readStream;
+public class JFile {
+    public static enum FileType {txt, dat, inf, bat, xml, config, none}
     
-    public JConsole(){
-            outStream = System.out;
-            readStream = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
-            System.setErr(outStream);
-    }
-    
-    public String readLine()
+    public boolean createFile(String name, FileType type)
     {
+        JConsole c = new JConsole();
         try
         {
-            return readStream.readLine();
+            if(type == FileType.none)
+            {
+                java.io.FileWriter fs  = new java.io.FileWriter(name);
+                fs.close();
+            }
+            else
+            {
+                java.io.FileWriter fs = new java.io.FileWriter(name + "." + type);
+                fs.close();
+            }            
         }
         catch(java.io.IOException ex)
         {
-            ex.printStackTrace();
-            return null;
+            c.writeLine(ex);
+            c.dispose();
+            return false;
         }
+        return true;
     }
     
-    public char read()
+    public boolean writeFile(java.io.File file, String data)
     {
-        try
+        
+        if(file.exists() && file.canWrite())
         {
-            return (char)readStream.read();
+            JConsole c = new JConsole();
+            try
+            {
+                java.io.FileWriter fs = new java.io.FileWriter(file);
+                fs.write(data);
+                fs.close();
+            }
+            catch(java.io.IOException ex)
+            {
+                c.writeLine(ex);
+                c.dispose();
+                return false;
+            }
         }
-        catch(java.io.IOException ex)
+        else
         {
-            ex.printStackTrace();
-            return 0;
+            return false;
         }
+        return true;
     }
     
-    public void write(Object o)
+    public java.io.File getFile(String path)
     {
-        outStream.print(o);
+        return new java.io.File(path);
     }
     
-    public void write(String s)
+    public String readFile(java.io.File file)
     {
-        outStream.print(s);
-    }
-    
-    public void write(boolean b)
-    {
-        outStream.print(b);
-    }
-    
-    public void write(char c)
-    {
-        outStream.print(c);
-    }
-    
-    public void write(char[] c)
-    {
-        outStream.print(c);
-    }
-    
-    public void write(double d)
-    {
-        outStream.print(d);
-    }
-    
-    public void write(int i)
-    {
-        outStream.print(i);
-    }
-    
-    public void write(long l)
-    {
-        outStream.print(l);
-    }
-    
-    public void write(float f)
-    {
-        outStream.print(f);
-    }
-    
-    public void write(byte[] b)
-    {
-        outStream.print(new String(b));
-    
-    }
-    public void writeLine() 
-    {
-        outStream.println();
-    }
-       
-    public void writeLine(String s)
-    {
-        outStream.println(s);
-    }
-    
-    public void writeLine(byte[] b)
-    {
-        outStream.println(new String(b));
-    }
-    
-    public void writeLine(Object o)
-    {
-        outStream.println(o);
-    
-    }
-    
-    public void writeLine(char c) 
-    {
-        outStream.println(c);
-    }
-    
-    public void writeLine(char[] c) 
-    {
-        outStream.println(c);
-    }
-            
-    public void writeLine(int i) 
-    {
-        outStream.println(i);
-    }
-    
-    public void writeLine(double d) 
-    {
-        outStream.println(d);
-    }
-    
-    public void writeLine(float f) 
-    {
-        outStream.println(f);
-    }
-    
-    public void writeLine(long l) 
-    {
-        outStream.println(l);
-    }
-    
-    public void writeLine(boolean b) 
-    {
-        outStream.println(b);
-    }
-    
-    public void dispose() 
-    {
-        outStream.close();
-        try
+        if(file.exists() && file.canRead())
         {
-            readStream.close();
+            JConsole c = new JConsole();
+        String data = "";
+            try
+            {
+                java.io.FileReader fs = new java.io.FileReader(file);
+                while(fs.ready())
+                {
+                    data += (char)fs.read();
+                }
+                fs.close();
+                return data;
+            }
+            catch(java.io.FileNotFoundException ex)
+            {
+                c.writeLine(ex);
+                c.dispose();
+                return "";
+            }
+            catch(java.io.IOException ex)
+            {
+                c.writeLine(ex);
+                c.dispose();
+                return data;
+            }
         }
-        catch(java.io.IOException ex)
-        {
-            ex.printStackTrace();
-        }
-        try 
-        {
-            this.finalize();
-        } 
-        catch (java.lang.Throwable ex) 
-        {
-            ex.printStackTrace();
-        }
+        return "";
     }
+    
 }
