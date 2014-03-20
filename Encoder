@@ -1,0 +1,13 @@
+package Others;
+
+/**
+ *
+ * @author Philip Ma
+ */
+ 
+public class Encoder {
+
+    public static String Encode(String text, java.nio.charset.Charset charset) throws java.io.UnsupportedEncodingException {
+        return java.net.URLEncoder.encode(new String(text.getBytes(java.nio.charset.Charset.forName("ISO_8859_1")), charset), charset.name());
+    }
+}
