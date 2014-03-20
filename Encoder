@@ -1,12 +1,17 @@
-package Others;
+package JSTD;
 
 /**
  *
  * @author Philip Ma
  */
- 
+
+
 public class Encoder {
 
+    /*
+    * Function: Encode
+    *   Takes any java string with default encoding and encodes it as any specified java supported encoding.
+    */
     public static String Encode(String text, java.nio.charset.Charset charset) throws java.io.UnsupportedEncodingException {
         return java.net.URLEncoder.encode(new String(text.getBytes(java.nio.charset.Charset.forName("ISO_8859_1")), charset), charset.name());
     }
